@@ -4,20 +4,35 @@ import {
   Button,
   Avatar,
   IconButton,
-  Menu,
   MenuItem,
   Select,
+  Menu,
 } from "@mui/material";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import AppsIcon from "@mui/icons-material/Apps";
 import DarkModeIcon from "@mui/icons-material/DarkMode";
 import LightModeIcon from "@mui/icons-material/LightMode";
-import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 
 export default function Topbar({ mode, setMode,role,setRole }) {
-  const [anchor, setAnchor] = useState(null);
   const navigate = useNavigate();
+  const [anchorEl, setAnchorEl] = useState(null);
+  const open = Boolean(anchorEl);
+
+  const handleAvatarClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem("role");
+    navigate("/",{ replace: true });
+  };
+
   return (
     <Box className="flex justify-between items-center mb-6">
       
@@ -63,15 +78,6 @@ export default function Topbar({ mode, setMode,role,setRole }) {
             <MenuItem value="manager" selected>Manager</MenuItem>
           </Select>
 
-          <Menu
-            anchorEl={anchor}
-            open={Boolean(anchor)}
-            onClose={() => setAnchor(null)}
-          >
-            <MenuItem>Profile</MenuItem>
-            <MenuItem>Logout</MenuItem>
-          </Menu>
-
           <IconButton>
             <AppsIcon />
           </IconButton>
@@ -80,7 +86,26 @@ export default function Topbar({ mode, setMode,role,setRole }) {
             <NotificationsIcon />
           </IconButton>
 
-          <Avatar />
+          <Avatar
+            sx={{ cursor: "pointer" }}
+            onClick={handleAvatarClick}
+          />
+
+          {/* Dropdown Menu */}
+          <Menu
+            anchorEl={anchorEl}
+            open={open}
+            onClose={handleClose}
+          >
+            <MenuItem
+              onClick={() => {
+                handleClose();
+                handleLogout();
+              }}
+            >
+              Logout
+            </MenuItem>
+          </Menu>
         </Box>
       </Box>
     </Box>

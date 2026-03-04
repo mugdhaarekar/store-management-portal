@@ -13,7 +13,7 @@ function App() {
   const [mode, setMode] = useState(
     localStorage.getItem("themeMode") || "light"
   );
-  const [role, setRole] = useState("manager");
+  const [role, setRole] = useState("");
 
   useEffect(() => {
     localStorage.setItem("themeMode", mode);
@@ -30,11 +30,8 @@ function App() {
             <Route path="/" element={<SignUp />} />
             <Route  element={<Layout mode={mode} setMode={setMode} role={role} setRole={setRole}/>}>
               <Route path="/dashboard" element={<ProtectedRoute path="/dashboard" role={role}><Dashboard/></ProtectedRoute>} />
-              <Route path="/products" element={<Product/>} />
-              <Route path="/add-product" element={<AddProduct/>} />              
-              <Route path="/traffic" element={<div>Traffic</div>} />
-              <Route path="/payment" element={<div>Payment</div>} />
-              <Route path="/account-setting" element={<div>Account Setting</div>} />
+              <Route path="/products" element={<ProtectedRoute><Product/></ProtectedRoute>} />
+              <Route path="/add-product" element={<ProtectedRoute><AddProduct/></ProtectedRoute>} />              
             </Route>
           </Routes>
       </BrowserRouter>
