@@ -18,13 +18,20 @@ const MenuItem = ({ icon, text, to, roles,role }) => {
     <NavLink
       to={to}
       style={{ textDecoration: "none" }}
-      className={({ isActive }) =>
-        `block rounded-lg mb-1 ${
+      className={({ isActive }) => {
+        if (localStorage.getItem("themeMode") === "dark") {
+          return `block rounded-lg mb-1 ${
+            isActive
+              ? "text-white bg-transparent border border-slate-600"
+              : "hover:border-slate-400"
+          }`;
+        }
+        return `block rounded-lg mb-1 ${
           isActive
             ? "bg-blue-100 text-blue-600"
             : "hover:bg-slate-100"
-        }`
-      }
+        }`;
+      }}
     >
       <ListItemButton>
         <ListItemIcon className="min-w-[36px] text-inherit">

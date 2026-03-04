@@ -1,6 +1,4 @@
 import { Box, Grid, Paper, Typography } from "@mui/material";
-// import Topbar from "../layout/Topbar";
-// import Sidebar from "../layout/Sidebar";
 import OverviewChart from "../components/dashboard/OverviewChart";
 import RecentSalesChart from "../components/dashboard/RecentSalesChart";
 import StatsSection from "../components/dashboard/StatsSection";

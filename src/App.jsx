@@ -13,7 +13,7 @@ function App() {
   const [mode, setMode] = useState(
     localStorage.getItem("themeMode") || "light"
   );
-  const [role, setRole] = useState("");
+  const [role, setRole] = useState(localStorage.getItem("role") || "");
 
   useEffect(() => {
     localStorage.setItem("themeMode", mode);
@@ -27,11 +27,11 @@ function App() {
 
       <BrowserRouter>
           <Routes>
-            <Route path="/" element={<SignUp />} />
+            <Route path="/" element={<SignUp setRole={setRole}/>} />
             <Route  element={<Layout mode={mode} setMode={setMode} role={role} setRole={setRole}/>}>
-              <Route path="/dashboard" element={<ProtectedRoute path="/dashboard" role={role}><Dashboard/></ProtectedRoute>} />
-              <Route path="/products" element={<ProtectedRoute><Product/></ProtectedRoute>} />
-              <Route path="/add-product" element={<ProtectedRoute><AddProduct/></ProtectedRoute>} />              
+              <Route path="/dashboard" element={<ProtectedRoute path={"/dashboard"}><Dashboard/></ProtectedRoute>} />
+              <Route path="/products" element={<ProtectedRoute path={"/products"}><Product/></ProtectedRoute>} />
+              <Route path="/add-product" element={<ProtectedRoute path={"/add-product"}><AddProduct/></ProtectedRoute>} />              
             </Route>
           </Routes>
       </BrowserRouter>

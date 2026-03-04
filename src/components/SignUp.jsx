@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import loginBg from "../images/loginBackground.svg";
 import googleIcon from '../images/google.svg';
+import { loginWithGoogle } from "../auth/authService";
 import { useNavigate } from "react-router-dom";
 import {
   TextField,
@@ -11,11 +12,9 @@ import {
   Typography,
   Box,
 } from "@mui/material";
-import { signInWithPopup } from "firebase/auth";
-import { auth, googleProvider } from "../firebase/firebaseConfig";
 
 
-const SignUp = () => {
+const SignUp = ({setRole}) => {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
@@ -59,23 +58,21 @@ const SignUp = () => {
   };
 
   const handleSignup = () => {
-    localStorage.setItem("role", "manager");
-    navigate("/dashboard",{replace:true});
+    localStorage.setItem("role", "manager");  
+    setRole("manager");
+    navigate("/dashboard");
   };
+
   const handleGoogleLogin = async () => {
     try {
-      const result = await signInWithPopup(auth, googleProvider);
-  
-      const user = result.user;
-      console.log("user:",user);
-      // store session
-      localStorage.setItem("role", "manager");
-  
-      // redirect
-      navigate("/dashboard",{replace:true});
-  
-    } catch (error) {
-      console.error(error);
+      const user = await loginWithGoogle();
+      if (user) {
+        localStorage.setItem("role", "manager");
+        setRole("manager");
+        navigate("/dashboard");
+      }
+    } catch (e) {
+      console.error(e);
     }
   };
   
