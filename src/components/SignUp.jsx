@@ -12,6 +12,8 @@ import {
   Typography,
   Box,
 } from "@mui/material";
+import { createUserWithEmailAndPassword, fetchSignInMethodsForEmail, signInWithEmailAndPassword } from "firebase/auth";
+import { auth } from "../firebase/firebaseConfig";
 
 
 const SignUp = ({setRole}) => {
@@ -19,6 +21,7 @@ const SignUp = ({setRole}) => {
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [mode, setMode] = useState("signup"); 
   const [errors, setErrors] = useState({});
   const [checked, setChecked] = useState(false);
   const disableGetStarted = !firstName || !lastName || !email || !password || !checked || Object.values(errors).some((error) => error)
@@ -57,10 +60,49 @@ const SignUp = ({setRole}) => {
     setErrors((prev) => ({ ...prev, [name]: error }));
   };
 
-  const handleSignup = () => {
-    localStorage.setItem("role", "manager");  
-    setRole("manager");
-    navigate("/dashboard");
+  // const handleSignup = () => {
+  //   localStorage.setItem("role", "manager");  
+  //   setRole("manager");
+  //   navigate("/dashboard");
+  // };
+  const handleSubmit = async () => {
+    try {
+      if (mode === "signup") {
+        await createUserWithEmailAndPassword(auth, email, password);
+      } else {
+        await signInWithEmailAndPassword(auth, email, password);
+      }
+      localStorage.setItem("role", "manager");
+      setRole("manager");
+      navigate("/dashboard");
+
+  
+    } catch (error) {
+  
+      if (error.code === "auth/email-already-in-use") {
+        alert("Account already exists. Please login.");
+        setMode("login");
+      }
+  
+      else if (error.code === "auth/wrong-password") {
+        alert("Incorrect password");
+      }
+  
+      else {
+        console.error(error);
+      }
+    }
+  };
+  const checkEmail = async () => {
+    if (!email) return;
+  
+    const methods = await fetchSignInMethodsForEmail(auth, email);
+  
+    if (methods.length > 0) {
+      setMode("login");
+    } else {
+      setMode("signup");
+    }
   };
 
   const handleGoogleLogin = async () => {
@@ -88,11 +130,13 @@ const SignUp = ({setRole}) => {
             </Typography>
 
             <Typography className="mb-6 text-gray-500">
-              Sign Up For Free
+                {mode === "signup" ? "Sign Up" : "Login"}
             </Typography>
           </Box>
 
           <div className="space-y-4">
+            {mode === "signup" &&
+            <>
             <TextField
               fullWidth
               type="name"
@@ -115,13 +159,15 @@ const SignUp = ({setRole}) => {
               error={!!errors.lastName}
               helperText={errors.lastName}
             />  
+            </>
+              }
             <TextField
               fullWidth
               label="Email"
               variant="outlined"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              onBlur={(e) => validateField("email", e.target.value)}
+              onBlur={checkEmail}
               error={!!errors.email}
               helperText={errors.email}
             />            
@@ -150,23 +196,23 @@ const SignUp = ({setRole}) => {
               variant="contained"
               size="large"
               className="blue-button rounded-1"
-              onClick={handleSignup}
+              onClick={handleSubmit}
               disabled={disableGetStarted}
             >
-              Get Started
+              {mode === "signup" ? "Sign Up" : "Login"}
             </Button>
 
+            <Typography variant="body2" color="text.secondary">
+              {mode === "signup"
+                ? "New user detected"
+                : "Account found — please login"}
+            </Typography>
             <Divider>OR</Divider>
 
             <Button variant="outlined" fullWidth className="rounded-1" onClick={handleGoogleLogin}>
               <img src={googleIcon} alt="Google Icon" className="mr-2"/>
               Sign in with Google
             </Button>
-
-            <Typography align="center" className="mt-2">
-              Already have an account?{" "}
-              <span className="text-blue-600 cursor-pointer">Login</span>
-            </Typography>
           </div>
         </Box>
       </div>
