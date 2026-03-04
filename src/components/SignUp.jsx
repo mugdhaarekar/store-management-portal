@@ -12,6 +12,8 @@ import {
   Typography,
   Box,
 } from "@mui/material";
+import { signInWithPopup } from "firebase/auth";
+import { auth, googleProvider } from "../firebase/firebaseConfig";
 
 
 const SignUp = () => {
@@ -58,6 +60,7 @@ const SignUp = () => {
   };
 
   const handleSignup = () => {
+    localStorage.setItem("role", "manager");
     navigate("/dashboard");
   };
   const handleGoogleLogin = async () => {
