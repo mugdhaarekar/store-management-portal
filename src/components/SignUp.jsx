@@ -62,10 +62,18 @@ const SignUp = () => {
   };
   const handleGoogleLogin = async () => {
     try {
-      const user = await loginWithGoogle();
-      if(user) navigate("/dashboard");
-    } catch (e) {
-      console.error(e);
+      const result = await signInWithPopup(auth, googleProvider);
+  
+      const user = result.user;
+    
+      // store session
+      localStorage.setItem("role", "manager");
+  
+      // redirect
+      navigate("/dashboard");
+  
+    } catch (error) {
+      console.error(error);
     }
   };
   
