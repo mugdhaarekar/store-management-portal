@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import loginBg from "../images/loginBackground.svg";
 import googleIcon from '../images/google.svg';
-import { loginWithGoogle } from "../auth/authService";
 import { useNavigate } from "react-router-dom";
 import {
   TextField,
@@ -68,7 +67,7 @@ const SignUp = () => {
       const result = await signInWithPopup(auth, googleProvider);
   
       const user = result.user;
-    
+      console.log("user:",user);
       // store session
       localStorage.setItem("role", "manager");
   
