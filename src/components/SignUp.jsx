@@ -60,7 +60,7 @@ const SignUp = () => {
 
   const handleSignup = () => {
     localStorage.setItem("role", "manager");
-    navigate("/dashboard");
+    navigate("/dashboard",{replace:true});
   };
   const handleGoogleLogin = async () => {
     try {
@@ -72,7 +72,7 @@ const SignUp = () => {
       localStorage.setItem("role", "manager");
   
       // redirect
-      navigate("/dashboard");
+      navigate("/dashboard",{replace:true});
   
     } catch (error) {
       console.error(error);
